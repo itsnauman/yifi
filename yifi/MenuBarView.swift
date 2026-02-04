@@ -8,8 +8,10 @@
 import SwiftUI
 
 struct MenuBarView: View {
-    @State private var sections: [SectionData] = NetworkSection.allCases.map {
-        SectionData(section: $0, isExpanded: true)
+    @State private var sections: [SectionData] = NetworkSection.allCases.map { section in
+        var sectionData = SectionData(section: section, isExpanded: true)
+        sectionData.metrics = section.metrics.map { MetricData(type: $0) }
+        return sectionData
     }
     
     var body: some View {
@@ -22,7 +24,7 @@ struct MenuBarView: View {
                 SectionView(sectionData: sectionData)
             }
         }
-        .padding(.bottom, 8)
+        .padding(.vertical, 12)
         .frame(width: 300)
         .onAppear {
             loadMockData()

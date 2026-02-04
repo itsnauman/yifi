@@ -10,10 +10,9 @@ import SwiftUI
 @main
 struct yifiApp: App {
     var body: some Scene {
-        MenuBarExtra {
+        MenuBarExtra("Yifi", systemImage: "wifi") {
             MenuBarView()
-        } label: {
-            Label("Yifi", systemImage: "wifi")
+                .frame(width: 300)
         }
         .menuBarExtraStyle(.window)
     }

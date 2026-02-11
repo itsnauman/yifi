@@ -30,8 +30,8 @@ This is consistent with a native Swift/macOS background app that polls lightweig
 ### CPU Profile (60s, 1s interval)
 
 ```mermaid
+%%{init: {"xyChart": {"width": 420, "height": 220}} }%%
 xychart-beta
-    title "yifi CPU Usage Summary (%)"
     x-axis "Percentile" ["avg","p50","p95","max"]
     y-axis "CPU %" 0 --> 2.6
     bar [0.469,0.000,2.200,2.500]
@@ -40,8 +40,8 @@ xychart-beta
 ### Memory Profile (60s, 1s interval)
 
 ```mermaid
+%%{init: {"xyChart": {"width": 420, "height": 220}} }%%
 xychart-beta
-    title "yifi Resident Memory Summary (MB)"
     x-axis "Percentile" ["avg","p50","p95","max"]
     y-axis "Memory (MB)" 26.5 --> 28.5
     bar [27.07,27.00,28.00,28.00]

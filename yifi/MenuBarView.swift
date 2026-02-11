@@ -59,36 +59,27 @@ struct MenuBarView: View {
                 Spacer()
             }
             
-            // Network name pill
+            // Network name pill with Liquid Glass effect
             HStack(spacing: 8) {
                 Image(systemName: "wifi")
                     .font(.system(size: 12, weight: .semibold))
-                    .foregroundStyle(.white)
                 
                 Text(networkMonitor.currentSSID ?? "Not Connected")
                     .font(.system(size: 13, weight: .medium))
-                    .foregroundStyle(.white)
                 
                 Spacer()
                 
                 if let band = networkMonitor.currentBand {
                     Text(band)
                         .font(.system(size: 11, weight: .medium))
-                        .foregroundStyle(.white.opacity(0.9))
                         .padding(.horizontal, 8)
                         .padding(.vertical, 3)
-                        .background(
-                            Capsule()
-                                .fill(.white.opacity(0.2))
-                        )
+                        .glassEffect(.regular.tint(networkMonitor.currentSSID != nil ? .blue : .gray))
                 }
             }
             .padding(.horizontal, 12)
-            .padding(.vertical, 8)
-            .background(
-                RoundedRectangle(cornerRadius: 8)
-                    .fill(networkMonitor.currentSSID != nil ? Color.blue : Color.gray)
-            )
+            .padding(.vertical, 10)
+            .glassEffect(.regular.tint(networkMonitor.currentSSID != nil ? .blue : .gray), in: .rect(cornerRadius: 12))
         }
         .padding(.horizontal, 16)
         .padding(.top, 12)

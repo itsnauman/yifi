@@ -103,7 +103,8 @@ extension SectionData {
             MetricData(
                 type: type,
                 currentValue: mockValue(for: type, status: status),
-                history: mockHistory(for: type, status: status)
+                history: mockHistory(for: type, status: status),
+                availability: .available
             )
         }
         return copy

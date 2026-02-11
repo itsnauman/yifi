@@ -7,6 +7,40 @@
 
 import SwiftUI
 
+// MARK: - Metric Availability
+
+/// Represents why a metric is unavailable
+enum MetricUnavailableReason: Equatable {
+    /// The probe failed entirely (e.g., command timed out, network unreachable)
+    case probeFailed
+    /// The metric cannot be computed (e.g., latency when packet loss is 100%)
+    case notComputable
+    /// The data source is unavailable (e.g., Wi-Fi disconnected, no gateway)
+    case sourceUnavailable
+    /// No data has been collected yet
+    case neverMeasured
+}
+
+/// Represents the availability state of a metric
+enum MetricAvailability: Equatable {
+    /// Metric has a fresh, valid value
+    case available
+    /// Metric data is stale (older than expected refresh interval)
+    case stale
+    /// Metric is unavailable with a reason
+    case unavailable(MetricUnavailableReason)
+    
+    var isAvailable: Bool {
+        if case .available = self { return true }
+        return false
+    }
+    
+    var isUnavailable: Bool {
+        if case .unavailable = self { return true }
+        return false
+    }
+}
+
 // MARK: - Status Types
 
 /// Represents the health status of a network metric
@@ -97,6 +131,32 @@ enum MetricType: String, CaseIterable, Identifiable {
         }
     }
     
+    /// A short, non-technical description of what this metric means
+    var description: String {
+        switch self {
+        case .linkRate:
+            return "How fast your Wi-Fi connection can transfer data"
+        case .signalStrength:
+            return "How well your device can hear the router"
+        case .noiseLevel:
+            return "Background interference that can affect your connection"
+        case .routerLatency:
+            return "How quickly your router responds to requests"
+        case .routerJitter:
+            return "How consistent your router's response time is"
+        case .routerPacketLoss:
+            return "How often data fails to reach your router"
+        case .internetLatency:
+            return "How quickly you can reach the internet"
+        case .internetJitter:
+            return "How consistent your internet response time is"
+        case .internetPacketLoss:
+            return "How often data fails to reach the internet"
+        case .dnsLatency:
+            return "How quickly website names are looked up"
+        }
+    }
+    
     /// Returns the status based on the metric value
     func status(for value: Double) -> MetricStatus {
         switch self {
@@ -183,15 +243,31 @@ struct MetricData: Identifiable {
     var currentValue: Double
     var history: [Double]
     
+    /// Timestamp of the last successful measurement
+    var lastUpdatedAt: Date?
+    
+    /// Current availability state of this metric
+    var availability: MetricAvailability = .unavailable(.neverMeasured)
+    
     /// Maximum number of historical data points to keep
     static let maxHistoryCount = 30
     
+    /// How long before a metric is considered stale (seconds)
+    static let staleThreshold: TimeInterval = 15
+    
     var status: MetricStatus {
-        if history.isEmpty { return .neutral }
-        return type.status(for: currentValue)
+        switch availability {
+        case .unavailable, .stale:
+            return .neutral
+        case .available:
+            return type.status(for: currentValue)
+        }
     }
     
     var formattedValue: String {
+        guard availability.isAvailable else {
+            return "N/A"
+        }
         switch type {
         case .linkRate:
             return String(format: "%.0f", currentValue)
@@ -206,10 +282,12 @@ struct MetricData: Identifiable {
         }
     }
     
-    init(type: MetricType, currentValue: Double = 0, history: [Double] = []) {
+    init(type: MetricType, currentValue: Double = 0, history: [Double] = [], availability: MetricAvailability = .unavailable(.neverMeasured)) {
         self.type = type
         self.currentValue = currentValue
         self.history = history
+        self.availability = availability
+        self.lastUpdatedAt = history.isEmpty ? nil : Date()
     }
     
     /// Adds a new value to the history and updates current value
@@ -218,6 +296,25 @@ struct MetricData: Identifiable {
         history.append(value)
         if history.count > Self.maxHistoryCount {
             history.removeFirst()
+        }
+        lastUpdatedAt = Date()
+        availability = .available
+    }
+    
+    /// Marks the metric as unavailable with a reason
+    mutating func markUnavailable(reason: MetricUnavailableReason) {
+        availability = .unavailable(reason)
+        // Don't clear lastUpdatedAt - we want to know when it was last valid
+    }
+    
+    /// Checks and updates staleness based on time since last update
+    mutating func updateStaleness() {
+        guard case .available = availability,
+              let lastUpdate = lastUpdatedAt else {
+            return
+        }
+        if Date().timeIntervalSince(lastUpdate) > Self.staleThreshold {
+            availability = .stale
         }
     }
 }
@@ -231,13 +328,27 @@ struct SectionData: Identifiable {
     var metrics: [MetricData]
     var isExpanded: Bool
     
-    /// Overall status is the worst status among all metrics in the section
+    /// Overall status is the worst status among available metrics in the section.
+    /// If all metrics are unavailable, returns neutral.
     var overallStatus: MetricStatus {
-        let statuses = metrics.map { $0.status }
+        // Only consider metrics that have available data
+        let availableMetrics = metrics.filter { $0.availability.isAvailable }
+        
+        // If no metrics are available, return neutral
+        guard !availableMetrics.isEmpty else {
+            return .neutral
+        }
+        
+        let statuses = availableMetrics.map { $0.status }
         if statuses.contains(.bad) { return .bad }
         if statuses.contains(.warning) { return .warning }
         if statuses.contains(.good) { return .good }
         return .neutral
+    }
+    
+    /// Returns true if all metrics in this section are unavailable
+    var allMetricsUnavailable: Bool {
+        metrics.allSatisfy { $0.availability.isUnavailable }
     }
     
     init(section: NetworkSection, isExpanded: Bool = true) {

@@ -2,7 +2,7 @@
 
 See what's slowing you down.
 
-Yifi is a macOS menu bar app that monitors your network health in real time. It breaks your connection into clear sections so you can quickly find where problems start, whether that is your Wi-Fi signal, router, ISP, or DNS.
+Yifi is a native macOS menu bar app with a minimal always-on footprint that monitors your network health in real time. It breaks your connection into clear sections so you can quickly find where problems start, whether that is your Wi-Fi signal, router, ISP, or DNS.
 
 ## Features
 
@@ -15,6 +15,37 @@ Yifi is a macOS menu bar app that monitors your network health in real time. It 
 - Color-coded status indicators: green, yellow, and red dots show what is healthy and what is not
 - Sparkline charts: mini trend graphs for each metric so you can spot patterns over time
 - Liquid Glass design with a native macOS look and feel
+
+## Resource Footprint
+
+Yifi is designed to stay in the menu bar all day with a small runtime footprint.
+
+- Measured on a live `yifi` process using `top` (`61` samples at `1s` intervals over `60s`)
+- CPU usage: `0.469%` average, `2.200%` p95, `2.500%` max observed
+- Memory usage: `27.07 MB` average resident, `28.00 MB` p95/max observed
+- Threads: typically single-digit
+
+This is consistent with a native Swift/macOS background app that polls lightweight network diagnostics every few seconds.
+
+### CPU Profile (60s, 1s interval)
+
+```mermaid
+xychart-beta
+    title "yifi CPU Usage Summary (%)"
+    x-axis "Percentile" ["avg","p50","p95","max"]
+    y-axis "CPU %" 0 --> 2.6
+    bar [0.469,0.000,2.200,2.500]
+```
+
+### Memory Profile (60s, 1s interval)
+
+```mermaid
+xychart-beta
+    title "yifi Resident Memory Summary (MB)"
+    x-axis "Percentile" ["avg","p50","p95","max"]
+    y-axis "Memory (MB)" 26.5 --> 28.5
+    bar [27.07,27.00,28.00,28.00]
+```
 
 ## Requirements
 

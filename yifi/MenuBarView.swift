@@ -24,7 +24,7 @@ struct MenuBarView: View {
                 }
             }
             .padding(.vertical, 12)
-            .frame(minWidth: 300, minHeight: 360)
+            .frame(minWidth: 300, minHeight: 540)
             .background(.windowBackground)
             
             // Location permission overlay
@@ -40,31 +40,74 @@ struct MenuBarView: View {
     // MARK: - Header Section
     
     private var headerSection: some View {
-        HStack(spacing: 10) {
-            // Wi-Fi icon with status color
-            Image(systemName: "wifi")
-                .font(.system(size: 24, weight: .medium))
-                .foregroundStyle(overallStatus.color)
-            
-            VStack(alignment: .leading, spacing: 2) {
-                Text("Network Health")
-                    .font(.system(size: 16, weight: .semibold))
-                
-                Text(statusDescription)
-                    .font(.system(size: 12))
+        VStack(alignment: .leading, spacing: 12) {
+            // App branding
+            HStack(spacing: 10) {
+                Image(systemName: "stethoscope")
+                    .font(.system(size: 20, weight: .medium))
                     .foregroundStyle(.secondary)
+                
+                VStack(alignment: .leading, spacing: 1) {
+                    Text("Yifi")
+                        .font(.system(size: 15, weight: .semibold))
+                    
+                    Text("See what's slowing you down.")
+                        .font(.system(size: 11))
+                        .foregroundStyle(.tertiary)
+                }
+                
+                Spacer()
             }
             
-            Spacer()
+            // Network name pill
+            HStack(spacing: 8) {
+                Image(systemName: "wifi")
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundStyle(.white)
+                
+                Text(networkMonitor.currentSSID ?? "Not Connected")
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundStyle(.white)
+                
+                Spacer()
+                
+                if let band = networkMonitor.currentBand {
+                    Text(band)
+                        .font(.system(size: 11, weight: .medium))
+                        .foregroundStyle(.white.opacity(0.9))
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 3)
+                        .background(
+                            Capsule()
+                                .fill(.white.opacity(0.2))
+                        )
+                }
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
+            .background(
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(networkMonitor.currentSSID != nil ? Color.blue : Color.gray)
+            )
         }
         .padding(.horizontal, 16)
         .padding(.top, 12)
-        .padding(.bottom, 4)
+        .padding(.bottom, 8)
     }
     
     // MARK: - Computed Properties
     
+    /// Whether all sections have unavailable metrics (no data collected yet)
+    private var allMetricsUnavailable: Bool {
+        networkMonitor.sections.allSatisfy { $0.allMetricsUnavailable }
+    }
+    
     private var overallStatus: MetricStatus {
+        // If all metrics are unavailable, return neutral
+        guard !allMetricsUnavailable else {
+            return .neutral
+        }
+        
         let statuses = networkMonitor.sections.map { $0.overallStatus }
         if statuses.contains(.bad) { return .bad }
         if statuses.contains(.warning) { return .warning }
@@ -73,6 +116,11 @@ struct MenuBarView: View {
     }
     
     private var statusDescription: String {
+        // Special case: no data yet
+        if allMetricsUnavailable {
+            return "Gathering data..."
+        }
+        
         switch overallStatus {
         case .good:
             return "All systems operational"
@@ -81,7 +129,7 @@ struct MenuBarView: View {
         case .bad:
             return "Connection issues detected"
         case .neutral:
-            return "Gathering data..."
+            return "Some metrics unavailable"
         }
     }
     

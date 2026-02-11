@@ -6,6 +6,9 @@ enum PingService {
         let averageLatency: Double
         let jitter: Double
         let packetLoss: Double
+        
+        /// Whether we actually received any ICMP replies
+        let hasValidLatency: Bool
     }
     
     /// Discovers the default gateway IP address.
@@ -25,7 +28,7 @@ enum PingService {
     
     /// Pings a host and returns latency statistics.
     /// - Parameter host: IP address or hostname to ping
-    /// - Returns: PingResult with latency, jitter, and packet loss, or nil on failure
+    /// - Returns: PingResult with latency, jitter, and packet loss, or nil if the ping command itself failed
     nonisolated static func ping(host: String) async -> PingResult? {
         do {
             // -c 10: send 10 pings for finer-grained packet loss detection (10% granularity)
@@ -38,6 +41,7 @@ enum PingService {
             )
             return parsePingOutput(result.output)
         } catch {
+            // Command execution failed (not the same as 100% packet loss)
             return nil
         }
     }
@@ -65,7 +69,9 @@ enum PingService {
     /// Parses ping command output to extract latency statistics.
     private nonisolated static func parsePingOutput(_ output: String) -> PingResult? {
         var rtts: [Double] = []
-        var packetLoss: Double = 0
+        var packetLoss: Double?
+        var packetsTransmitted: Int?
+        var packetsReceived: Int?
         
         let lines = output.components(separatedBy: "\n")
         
@@ -82,24 +88,55 @@ enum PingService {
                 }
             }
             
-            // Parse packet loss from line like:
-            // "5 packets transmitted, 5 packets received, 0.0% packet loss"
-            if line.contains("packet loss") {
-                // Find the percentage value before "% packet loss"
-                if let percentRange = line.range(of: "% packet loss") {
-                    let beforePercent = line[..<percentRange.lowerBound]
-                    // Get the number before the %
-                    let parts = beforePercent.components(separatedBy: CharacterSet(charactersIn: ", "))
-                    if let lastPart = parts.last, let loss = Double(lastPart) {
-                        packetLoss = loss
+            // Parse packet statistics from line like:
+            // "10 packets transmitted, 10 packets received, 0.0% packet loss"
+            // or "5 packets transmitted, 0 packets received, 100.0% packet loss"
+            if line.contains("packets transmitted") {
+                // Parse transmitted count
+                let parts = line.components(separatedBy: ",")
+                for part in parts {
+                    let trimmed = part.trimmingCharacters(in: .whitespaces)
+                    if trimmed.contains("transmitted") {
+                        let numPart = trimmed.components(separatedBy: " ").first ?? ""
+                        packetsTransmitted = Int(numPart)
+                    } else if trimmed.contains("received") && !trimmed.contains("%") {
+                        let numPart = trimmed.components(separatedBy: " ").first ?? ""
+                        packetsReceived = Int(numPart)
+                    } else if trimmed.contains("% packet loss") {
+                        // Extract the percentage value
+                        let lossString = trimmed.replacingOccurrences(of: "% packet loss", with: "")
+                            .trimmingCharacters(in: .whitespaces)
+                        packetLoss = Double(lossString)
                     }
                 }
             }
         }
         
-        // Handle 100% packet loss case
+        // Validate we got packet statistics from the output
+        // If we can't parse the statistics line, consider it a failed probe
+        guard packetsTransmitted != nil else {
+            return nil
+        }
+        
+        // Calculate packet loss if not explicitly parsed
+        let finalPacketLoss: Double
+        if let loss = packetLoss {
+            finalPacketLoss = loss
+        } else if let transmitted = packetsTransmitted, let received = packetsReceived, transmitted > 0 {
+            finalPacketLoss = Double(transmitted - received) / Double(transmitted) * 100.0
+        } else {
+            // Can't determine packet loss - treat as probe failure
+            return nil
+        }
+        
+        // Handle case where we have no RTTs (100% packet loss)
         if rtts.isEmpty {
-            return PingResult(averageLatency: 0, jitter: 0, packetLoss: packetLoss > 0 ? packetLoss : 100)
+            return PingResult(
+                averageLatency: 0,
+                jitter: 0,
+                packetLoss: finalPacketLoss,
+                hasValidLatency: false
+            )
         }
         
         // Calculate average latency
@@ -112,7 +149,8 @@ enum PingService {
         return PingResult(
             averageLatency: averageLatency,
             jitter: jitter,
-            packetLoss: packetLoss
+            packetLoss: finalPacketLoss,
+            hasValidLatency: true
         )
     }
 }

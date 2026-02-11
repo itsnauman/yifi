@@ -22,7 +22,7 @@ struct yifiApp: App {
     }
 
     var body: some Scene {
-        MenuBarExtra("Yifi", systemImage: "wifi", isInserted: $showMenuBarExtra) {
+        MenuBarExtra("Yifi", systemImage: "stethoscope", isInserted: $showMenuBarExtra) {
             MenuBarView(networkMonitor: networkMonitor)
         }
         .menuBarExtraStyle(.window)

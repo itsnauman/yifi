@@ -27,6 +27,25 @@ Yifi is a macOS menu bar app that monitors your network health in real time. It 
 - macOS 26.2 or later
 - Location permission (required by macOS to access Wi-Fi information)
 
+## Install with Homebrew
+
+1. Add the tap:
+   ```bash
+   brew tap naumanahmad/yifi
+   ```
+
+2. Install Yifi:
+   ```bash
+   brew install --cask yifi
+   ```
+
+Yifi is distributed as an unsigned app bundle in this tap. On first launch, macOS may block it with a Gatekeeper warning.
+
+If this happens, use one of these:
+
+- Control-click `yifi` in `/Applications`, choose `Open`, then confirm `Open`.
+- Go to `System Settings -> Privacy & Security`, then allow/open the blocked app.
+
 ## Building from Source
 
 1. Clone the repository:

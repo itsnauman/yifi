@@ -21,9 +21,22 @@
 		79005C002F330999006AF134 /* yifiTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = yifiTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		79005C0B2F33099A006AF134 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 79005BE52F330997006AF134 /* yifi */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		79005BE82F330997006AF134 /* yifi */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				79005C0B2F33099A006AF134 /* PBXFileSystemSynchronizedBuildFileExceptionSet */,
+			);
 			path = yifi;
 			sourceTree = "<group>";
 		};

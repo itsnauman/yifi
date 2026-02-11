@@ -13,26 +13,38 @@ struct MenuBarView: View {
         sectionData.metrics = section.metrics.map { MetricData(type: $0) }
         return sectionData
     }
+    @State private var locationManager = LocationManager()
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            // Header section
-            headerSection
-            
-            // Network metrics sections
-            ForEach(sections) { sectionData in
-                SectionView(sectionData: sectionData)
+        ZStack {
+            // Main content
+            VStack(alignment: .leading, spacing: 0) {
+                // Header section
+                headerSection
+                
+                // Network metrics sections
+                ForEach(sections) { sectionData in
+                    SectionView(sectionData: sectionData)
+                }
             }
-        }
-        .padding(.vertical, 12)
-        .frame(minWidth: 300, minHeight: 360)
-        .background(.windowBackground)
-        .onAppear {
-            print("MenuBarView appeared")
-            loadMockData()
-        }
-        .onDisappear {
-            print("MenuBarView disappeared")
+            .padding(.vertical, 12)
+            .frame(minWidth: 300, minHeight: 360)
+            .background(.windowBackground)
+            .onAppear {
+                print("MenuBarView appeared")
+                loadMockData()
+            }
+            .onDisappear {
+                print("MenuBarView disappeared")
+            }
+            
+            // Location permission overlay
+            if locationManager.authorizationStatus != .authorized {
+                LocationPermissionOverlay(
+                    locationManager: locationManager,
+                    status: locationManager.authorizationStatus
+                )
+            }
         }
     }
     

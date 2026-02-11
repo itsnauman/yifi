@@ -4,5 +4,9 @@
 <dict>
     <key>LSUIElement</key>
     <true/>
+    <key>NSLocationUsageDescription</key>
+    <string>Location access is required to retrieve Wi-Fi network information and health metrics.</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>Location access is required to retrieve Wi-Fi network information and health metrics.</string>
 </dict>
 </plist>

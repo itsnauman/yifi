@@ -74,12 +74,22 @@ struct MenuBarView: View {
                         .font(.system(size: 11, weight: .medium))
                         .padding(.horizontal, 8)
                         .padding(.vertical, 3)
+                        #if compiler(>=6.2)
                         .glassEffect(.regular.tint(networkMonitor.currentSSID != nil ? .blue : .gray))
+                        #else
+                        .background((networkMonitor.currentSSID != nil ? Color.blue : Color.gray).opacity(0.15))
+                        .clipShape(Capsule())
+                        #endif
                 }
             }
             .padding(.horizontal, 12)
             .padding(.vertical, 10)
+            #if compiler(>=6.2)
             .glassEffect(.regular.tint(networkMonitor.currentSSID != nil ? .blue : .gray), in: .rect(cornerRadius: 12))
+            #else
+            .background((networkMonitor.currentSSID != nil ? Color.blue : Color.gray).opacity(0.15))
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+            #endif
         }
         .padding(.horizontal, 16)
         .padding(.top, 12)

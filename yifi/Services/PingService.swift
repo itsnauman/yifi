@@ -47,7 +47,7 @@ enum PingService {
     }
     
     /// Parses gateway IP from route command output.
-    private nonisolated static func parseGateway(from output: String) -> String? {
+    nonisolated static func parseGateway(from output: String) -> String? {
         // Look for "gateway: X.X.X.X" in output
         let lines = output.components(separatedBy: "\n")
         for line in lines {
@@ -67,7 +67,7 @@ enum PingService {
     }
     
     /// Parses ping command output to extract latency statistics.
-    private nonisolated static func parsePingOutput(_ output: String) -> PingResult? {
+    nonisolated static func parsePingOutput(_ output: String) -> PingResult? {
         var rtts: [Double] = []
         var packetLoss: Double?
         var packetsTransmitted: Int?

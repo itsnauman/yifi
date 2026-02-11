@@ -6,8 +6,19 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXContainerItemProxy section */
+		79005C062F330999006AF134 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 79005BDE2F330997006AF134 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 79005BE52F330997006AF134;
+			remoteInfo = yifi;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		79005BE62F330997006AF134 /* yifi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = yifi.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		79005C002F330999006AF134 /* yifiTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = yifiTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -16,10 +27,22 @@
 			path = yifi;
 			sourceTree = "<group>";
 		};
+		79005C012F330999006AF134 /* yifiTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = yifiTests;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		79005BE32F330997006AF134 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		79005C022F330999006AF134 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -33,6 +56,7 @@
 			isa = PBXGroup;
 			children = (
 				79005BE82F330997006AF134 /* yifi */,
+				79005C012F330999006AF134 /* yifiTests */,
 				79005BE72F330997006AF134 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -41,6 +65,7 @@
 			isa = PBXGroup;
 			children = (
 				79005BE62F330997006AF134 /* yifi.app */,
+				79005C002F330999006AF134 /* yifiTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -70,6 +95,29 @@
 			productReference = 79005BE62F330997006AF134 /* yifi.app */;
 			productType = "com.apple.product-type.application";
 		};
+		79005C052F330999006AF134 /* yifiTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 79005C0A2F330999006AF134 /* Build configuration list for PBXNativeTarget "yifiTests" */;
+			buildPhases = (
+				79005C032F330999006AF134 /* Sources */,
+				79005C022F330999006AF134 /* Frameworks */,
+				79005C042F330999006AF134 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				79005C072F330999006AF134 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				79005C012F330999006AF134 /* yifiTests */,
+			);
+			name = yifiTests;
+			packageProductDependencies = (
+			);
+			productName = yifiTests;
+			productReference = 79005C002F330999006AF134 /* yifiTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -82,6 +130,10 @@
 				TargetAttributes = {
 					79005BE52F330997006AF134 = {
 						CreatedOnToolsVersion = 26.3;
+					};
+					79005C052F330999006AF134 = {
+						CreatedOnToolsVersion = 26.3;
+						TestTargetID = 79005BE52F330997006AF134;
 					};
 				};
 			};
@@ -100,12 +152,20 @@
 			projectRoot = "";
 			targets = (
 				79005BE52F330997006AF134 /* yifi */,
+				79005C052F330999006AF134 /* yifiTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		79005BE42F330997006AF134 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		79005C042F330999006AF134 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -122,7 +182,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		79005C032F330999006AF134 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		79005C072F330999006AF134 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 79005BE52F330997006AF134 /* yifi */;
+			targetProxy = 79005C062F330999006AF134 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		79005BF12F330998006AF134 /* Debug */ = {
@@ -333,6 +408,48 @@
 			};
 			name = Release;
 		};
+		79005C082F330999006AF134 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 8KWT8DCUF8;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 26.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = naumanahmad.yifiTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/yifi.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/yifi";
+			};
+			name = Debug;
+		};
+		79005C092F330999006AF134 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 8KWT8DCUF8;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 26.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = naumanahmad.yifiTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/yifi.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/yifi";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -350,6 +467,15 @@
 			buildConfigurations = (
 				79005BF42F330998006AF134 /* Debug */,
 				79005BF52F330998006AF134 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		79005C0A2F330999006AF134 /* Build configuration list for PBXNativeTarget "yifiTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				79005C082F330999006AF134 /* Debug */,
+				79005C092F330999006AF134 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

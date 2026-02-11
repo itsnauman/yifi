@@ -44,7 +44,7 @@ enum MetricAvailability: Equatable {
 // MARK: - Status Types
 
 /// Represents the health status of a network metric
-enum MetricStatus {
+enum MetricStatus: Equatable {
     case good
     case warning
     case bad

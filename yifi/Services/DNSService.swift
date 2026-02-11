@@ -1,7 +1,7 @@
 import Foundation
 
 /// Errors that can occur during DNS measurement
-enum DNSError: Error {
+enum DNSError: Error, Equatable {
     /// The dig command failed to execute
     case commandFailed
     /// Could not parse the query time from output
@@ -29,7 +29,7 @@ enum DNSService {
     }
     
     /// Parses dig output to extract query time and validate status.
-    private nonisolated static func parseDigOutput(_ output: String) -> Result<Double, DNSError> {
+    nonisolated static func parseDigOutput(_ output: String) -> Result<Double, DNSError> {
         let lines = output.components(separatedBy: "\n")
         
         var queryTime: Double?

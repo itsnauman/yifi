@@ -1,10 +1,4 @@
-```text
-Y   Y  IIIII  FFFFF  IIIII
- Y Y     I    F        I
-  Y      I    FFF      I
-  Y      I    F        I
-  Y    IIIII  F      IIIII
-```
+# ▂▄▆█ Yifi
 
 See what's slowing you down.
 

@@ -1,4 +1,4 @@
-# ▂▄▆█ Yifi
+# 📶 Yifi
 
 See what's slowing you down.
 

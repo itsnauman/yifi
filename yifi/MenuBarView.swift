@@ -25,9 +25,14 @@ struct MenuBarView: View {
             }
         }
         .padding(.vertical, 12)
-        .frame(width: 300)
+        .frame(minWidth: 300, minHeight: 360)
+        .background(.windowBackground)
         .onAppear {
+            print("MenuBarView appeared")
             loadMockData()
+        }
+        .onDisappear {
+            print("MenuBarView disappeared")
         }
     }
     

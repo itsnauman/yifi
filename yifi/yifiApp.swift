@@ -9,10 +9,20 @@ import SwiftUI
 
 @main
 struct yifiApp: App {
+    @AppStorage("showMenuBarExtra") private var showMenuBarExtra = true
+
+    init() {
+        UserDefaults.standard.register(defaults: ["showMenuBarExtra": true])
+        if UserDefaults.standard.bool(forKey: "showMenuBarExtra") == false {
+            UserDefaults.standard.set(true, forKey: "showMenuBarExtra")
+        }
+        let storedValue = UserDefaults.standard.bool(forKey: "showMenuBarExtra")
+        print("yifiApp init, showMenuBarExtra=\(storedValue)")
+    }
+
     var body: some Scene {
-        MenuBarExtra("Yifi", systemImage: "wifi") {
+        MenuBarExtra("Yifi", systemImage: "wifi", isInserted: $showMenuBarExtra) {
             MenuBarView()
-                .frame(width: 300)
         }
         .menuBarExtraStyle(.window)
     }

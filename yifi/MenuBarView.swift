@@ -8,11 +8,7 @@
 import SwiftUI
 
 struct MenuBarView: View {
-    @State private var sections: [SectionData] = NetworkSection.allCases.map { section in
-        var sectionData = SectionData(section: section, isExpanded: true)
-        sectionData.metrics = section.metrics.map { MetricData(type: $0) }
-        return sectionData
-    }
+    var networkMonitor: NetworkMonitor
     @State private var locationManager = LocationManager()
     
     var body: some View {
@@ -23,20 +19,13 @@ struct MenuBarView: View {
                 headerSection
                 
                 // Network metrics sections
-                ForEach(sections) { sectionData in
+                ForEach(networkMonitor.sections) { sectionData in
                     SectionView(sectionData: sectionData)
                 }
             }
             .padding(.vertical, 12)
             .frame(minWidth: 300, minHeight: 360)
             .background(.windowBackground)
-            .onAppear {
-                print("MenuBarView appeared")
-                loadMockData()
-            }
-            .onDisappear {
-                print("MenuBarView disappeared")
-            }
             
             // Location permission overlay
             if locationManager.authorizationStatus != .authorized {
@@ -76,7 +65,7 @@ struct MenuBarView: View {
     // MARK: - Computed Properties
     
     private var overallStatus: MetricStatus {
-        let statuses = sections.map { $0.overallStatus }
+        let statuses = networkMonitor.sections.map { $0.overallStatus }
         if statuses.contains(.bad) { return .bad }
         if statuses.contains(.warning) { return .warning }
         if statuses.contains(.good) { return .good }
@@ -96,83 +85,8 @@ struct MenuBarView: View {
         }
     }
     
-    // MARK: - Mock Data Loading
-    
-    private func loadMockData() {
-        // Load mock data for UI preview
-        // This will be replaced with real network monitoring in the future
-        sections = [
-            createMockSection(.connectionToRouter, status: .good),
-            createMockSection(.insideHomeNetwork, status: .good),
-            createMockSection(.connectionToInternet, status: .warning),
-            createMockSection(.websiteNameLookup, status: .good)
-        ]
-    }
-    
-    private func createMockSection(_ section: NetworkSection, status: MetricStatus) -> SectionData {
-        var sectionData = SectionData(section: section, isExpanded: true)
-        sectionData.metrics = section.metrics.map { type in
-            MetricData(
-                type: type,
-                currentValue: mockValue(for: type, status: status),
-                history: mockHistory(for: type, status: status)
-            )
-        }
-        return sectionData
-    }
-    
-    private func mockValue(for type: MetricType, status: MetricStatus) -> Double {
-        switch type {
-        case .linkRate:
-            switch status {
-            case .good: return 450
-            case .warning: return 120
-            case .bad, .neutral: return 30
-            }
-        case .signalStrength:
-            switch status {
-            case .good: return -55
-            case .warning: return -68
-            case .bad, .neutral: return -82
-            }
-        case .noiseLevel:
-            return -90
-        case .routerLatency, .internetLatency:
-            switch status {
-            case .good: return 12
-            case .warning: return 55
-            case .bad, .neutral: return 150
-            }
-        case .routerJitter, .internetJitter:
-            switch status {
-            case .good: return 5
-            case .warning: return 25
-            case .bad, .neutral: return 80
-            }
-        case .routerPacketLoss, .internetPacketLoss:
-            switch status {
-            case .good: return 0
-            case .warning: return 2.5
-            case .bad, .neutral: return 8
-            }
-        case .dnsLatency:
-            switch status {
-            case .good: return 25
-            case .warning: return 120
-            case .bad, .neutral: return 350
-            }
-        }
-    }
-    
-    private func mockHistory(for type: MetricType, status: MetricStatus) -> [Double] {
-        let baseValue = mockValue(for: type, status: status)
-        let variance = abs(baseValue) * 0.15
-        return (0..<20).map { _ in
-            baseValue + Double.random(in: -variance...variance)
-        }
-    }
 }
 
 #Preview {
-    MenuBarView()
+    MenuBarView(networkMonitor: NetworkMonitor())
 }

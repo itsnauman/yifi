@@ -187,7 +187,8 @@ struct MetricData: Identifiable {
     static let maxHistoryCount = 30
     
     var status: MetricStatus {
-        type.status(for: currentValue)
+        if history.isEmpty { return .neutral }
+        return type.status(for: currentValue)
     }
     
     var formattedValue: String {

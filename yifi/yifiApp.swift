@@ -10,6 +10,7 @@ import SwiftUI
 @main
 struct yifiApp: App {
     @AppStorage("showMenuBarExtra") private var showMenuBarExtra = true
+    @State private var networkMonitor = NetworkMonitor()
 
     init() {
         UserDefaults.standard.register(defaults: ["showMenuBarExtra": true])
@@ -22,7 +23,7 @@ struct yifiApp: App {
 
     var body: some Scene {
         MenuBarExtra("Yifi", systemImage: "wifi", isInserted: $showMenuBarExtra) {
-            MenuBarView()
+            MenuBarView(networkMonitor: networkMonitor)
         }
         .menuBarExtraStyle(.window)
     }

@@ -28,13 +28,13 @@ enum PingService {
     /// - Returns: PingResult with latency, jitter, and packet loss, or nil on failure
     nonisolated static func ping(host: String) async -> PingResult? {
         do {
-            // -c 5: send 5 pings
+            // -c 10: send 10 pings for finer-grained packet loss detection (10% granularity)
             // -i 0.2: 200ms interval between pings
             // -W 1000: 1 second timeout per ping
             let result = try await ShellExecutor.run(
                 "/sbin/ping",
-                arguments: ["-c", "5", "-i", "0.2", "-W", "1000", host],
-                timeout: 10
+                arguments: ["-c", "10", "-i", "0.2", "-W", "1000", host],
+                timeout: 15
             )
             return parsePingOutput(result.output)
         } catch {

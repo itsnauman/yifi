@@ -15,6 +15,10 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
+      - name: Detect macOS version for deployment target
+        id: macos-version
+        run: echo "version=$(sw_vers -productVersion | cut -d. -f1).0" >> "$GITHUB_OUTPUT"
+
       - name: Run tests
         run: |
           xcodebuild test \
@@ -22,7 +26,8 @@ jobs:
             -scheme yifi \
             -destination 'platform=macOS' \
             CODE_SIGNING_ALLOWED=NO \
-            CODE_SIGNING_REQUIRED=NO
+            CODE_SIGNING_REQUIRED=NO \
+            MACOSX_DEPLOYMENT_TARGET=${{ steps.macos-version.outputs.version }}
 
       - name: Build unsigned app
         run: |
@@ -32,7 +37,8 @@ jobs:
             -configuration Release \
             -derivedDataPath build \
             CODE_SIGNING_ALLOWED=NO \
-            CODE_SIGNING_REQUIRED=NO
+            CODE_SIGNING_REQUIRED=NO \
+            MACOSX_DEPLOYMENT_TARGET=${{ steps.macos-version.outputs.version }}
 
       - name: Package app bundle for cask
         run: |

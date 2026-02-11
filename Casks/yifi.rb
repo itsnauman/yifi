@@ -2,10 +2,10 @@ cask "yifi" do
   version :latest
   sha256 :no_check
 
-  url "https://github.com/naumanahmad/yifi/releases/latest/download/yifi.zip"
+  url "https://github.com/itsnauman/yifi/releases/latest/download/yifi.zip"
   name "Yifi"
   desc "Menu bar app for monitoring network health"
-  homepage "https://github.com/naumanahmad/yifi"
+  homepage "https://github.com/itsnauman/yifi"
 
   app "yifi.app"
 

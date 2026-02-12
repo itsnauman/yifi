@@ -25,28 +25,6 @@ Yifi is designed to stay in the menu bar all day with a small runtime footprint.
 - Memory usage: `27.07 MB` average resident, `28.00 MB` p95/max observed
 - Threads: typically single-digit
 
-This is consistent with a native Swift/macOS background app that polls lightweight network diagnostics every few seconds.
-
-### CPU Profile (60s, 1s interval)
-
-```mermaid
-%%{init: {"xyChart": {"width": 420, "height": 220}} }%%
-xychart-beta
-    x-axis "Percentile" ["avg","p50","p95","max"]
-    y-axis "CPU %" 0 --> 2.6
-    bar [0.469,0.000,2.200,2.500]
-```
-
-### Memory Profile (60s, 1s interval)
-
-```mermaid
-%%{init: {"xyChart": {"width": 420, "height": 220}} }%%
-xychart-beta
-    x-axis "Percentile" ["avg","p50","p95","max"]
-    y-axis "Memory (MB)" 26.5 --> 28.5
-    bar [27.07,27.00,28.00,28.00]
-```
-
 ## Requirements
 
 - macOS 26.2 or later
